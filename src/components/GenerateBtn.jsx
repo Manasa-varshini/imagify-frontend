@@ -73,4 +73,3 @@ const GenerateBtn = () => {
 };
 
 export default GenerateBtn;
-
