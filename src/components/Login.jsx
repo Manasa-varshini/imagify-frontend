@@ -14,7 +14,7 @@ const Login = ({ setShowLogin }) => {
   const [newPassword, setNewPassword] = useState("");
 
   // ✅ Fixed backend API base URL
-  const API_BASE = "https://imagify-backend-2-3rj7.onrender.com";
+  const API_BASE = "https://imagify-backend-3.onrender.com";
 
   // 🔹 Handle login or signup
   const handleSubmit = async (e) => {
