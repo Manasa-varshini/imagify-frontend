@@ -1,10 +1,10 @@
 import React, { useContext, useState } from 'react';
 import axios from 'axios';
-import { AppContext } from '../context/AppContext';           // ⬅️ If you manage user in context
-import { useNavigate } from 'react-router-dom';               // ⬅️ For redirect after alert (optional)
+import { AppContext } from '../context/AppContext';
+import { useNavigate } from 'react-router-dom';
 
 const ImageGenerator = () => {
-  const { user } = useContext(AppContext);                    // user is null when not logged-in
+  const { user } = useContext(AppContext);
   const [prompt, setPrompt] = useState('');
   const [resultImage, setResultImage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -15,7 +15,7 @@ const ImageGenerator = () => {
 
     if (!token) {
       alert('Please log in to generate images.');
-      navigate('/');       // or open login modal if you prefer
+      navigate('/'); // redirect to home or open login modal
       return;
     }
 
@@ -24,7 +24,7 @@ const ImageGenerator = () => {
       setResultImage('');
 
       const response = await axios.post(
-        'http://localhost:4000/api/image/generate-image',
+        'https://imagify-backend-3.onrender.com/api/image/generate-image',
         { prompt },
         {
           headers: {
@@ -34,20 +34,26 @@ const ImageGenerator = () => {
         }
       );
 
-      if (response.data.success) {
+      // Adjust based on your backend response structure
+      // If your backend returns { image: "<image_url>" }
+      if (response.data.image) {
+        setResultImage(response.data.image);
+      } else if (response.data.resultImage) {
         setResultImage(response.data.resultImage);
       } else {
-        alert(response.data.message);
+        alert(response.data.message || 'Failed to generate image.');
       }
     } catch (error) {
-      console.error(error);
-      alert('Something went wrong');
+      console.error('Generate Image Error:', error.response || error);
+      alert(
+        error.response?.data?.message ||
+          'Something went wrong while generating the image.'
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  // 🔒 If not logged in, show a friendly message instead of the generator
   if (!user) {
     return (
       <div className="p-4 max-w-md mx-auto text-center">
